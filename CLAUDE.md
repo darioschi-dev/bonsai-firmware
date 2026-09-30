@@ -164,4 +164,4 @@ Il repo è su questo branch da circa 5 mesi. Contiene fix a bug critici non anco
 
 ---
 
-Workflow, ruoli e testing: `~/Projects/docs/ai-governance/v3/`
+Regole comuni: agent-toolkit (`docs/AGENT_FILES.md`, `docs/TESTING.md`)
