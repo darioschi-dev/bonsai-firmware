@@ -23,3 +23,11 @@
 - Prossimo passo o blocchi: Dario decide se riportare il server OTA alla v1.4.17 (e se cancellare i tre rilasci), e se escludere dal workflow i push che non toccano il firmware (paths-ignore su *.md, .agent, .githooks, docs).
 - Lezione: un workflow che pubblica un rilascio e un aggiornamento OTA a ogni push su master fa di ogni commit, anche di sola documentazione, un rilascio di produzione: prima di pushare su un repository controllare .github/workflows e ciò che il push innesca, non solo i test locali.
 - Soggetto: rilasci-involontari
+
+## 2026-10-02 22:42 CEST — Claude (Sonnet 5.5, session id 63ffcf64-e8d6-4f3c-b7e2-c1d69da68c3a) — DECISIONE
+
+- Decisione o attività: su richiesta dell'utente dichiarato in `AGENTS.md` il tipo del repository, `Tipo di repository: codice.` (dedotto dal tipo nei domini di atk: coding = codice, dossier e raccolta = documentazione). Non cambia il comportamento: la regola Git del 2026-10-02 vale per tutti i tipi, la riga rende il tipo esplicito.
+- Verifiche o fonti: `atk domains tree`, assenza della riga in `AGENTS.md`.
+- File o commit: `AGENTS.md`, questa voce.
+- Prossimo passo o blocchi: nessuno.
+- Soggetto: tipo-repository-dichiarato

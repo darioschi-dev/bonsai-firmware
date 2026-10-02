@@ -1,5 +1,7 @@
 # Istruzioni per gli agenti
 
+Tipo di repository: codice.
+
 <!-- atk-scaffold:prima-di-iniziare 829ddadf -->
 ## Prima di iniziare
 
