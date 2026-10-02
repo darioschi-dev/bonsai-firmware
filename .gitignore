@@ -60,3 +60,7 @@ Thumbs.db
 .history/
 .git_backup/
 .git.bak/
+
+# generati dalla build
+include/version_auto.h
+compile_commands.json
