@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# atk-managed: commit-msg 613a955b
+# Regola del workspace: nessun riferimento ad assistenti o modelli automatici nei messaggi di commit (vedi AGENTS.md).
+# Installato da `atk scaffold --hooks`, che imposta anche `git config core.hooksPath .githooks` (locale a ogni clone; lo controlla `atk doctor`).
+
+set -euo pipefail
+
+# Regola del workspace: nessun riferimento ad assistenti o modelli automatici
+# nei messaggi di commit — né trailer, né firme, né menzioni nel corpo, di
+# qualunque fornitore. Esiste perché la sola regola scritta non bastava: fino
+# al 2026-09-23 ne erano finiti 77 nella history.
+#
+# Le righe di commento (`#`) non entrano nel commit e sono ignorate. I nomi di
+# file del repository che contengono una di queste parole (CLAUDE.md,
+# AGENTS.md, AGENT-ACTIVE.md, .agent/) si possono citare: sono percorsi, non
+# riferimenti.
+msg_file="$1"
+
+body="$(grep -v '^#' "$msg_file" \
+  | sed -E 's#(CLAUDE|AGENTS|AGENT-ACTIVE)\.md##g; s#\.agent/##g')"
+
+# Nomi di fornitori, prodotti e modelli, senza distinzione di maiuscole.
+names='claude|anthropic|opus|sonnet|haiku|fable|codex|openai|chatgpt|gpt(-[0-9a-z.]+)?|gemini|bard|antigravity|agy|copilot|cursor|windsurf|llm|llms|intelligenza artificiale|artificial intelligence'
+
+matches="$(
+  {
+    printf '%s\n' "$body" | grep -inwE "$names" || true
+    # AI/IA solo in maiuscolo: «ai» minuscolo è la preposizione italiana.
+    printf '%s\n' "$body" | grep -nwE 'AI|IA' || true
+    printf '%s\n' "$body" | grep -inE 'generated (with|by)|🤖' || true
+  } | sort -t: -k1,1n -u
+)"
+
+if [[ -n "$matches" ]]; then
+  echo "[commit-msg] Commit rifiutato: il messaggio non può contenere riferimenti ad assistenti o modelli automatici:" >&2
+  printf '  riga %s\n' "$matches" >&2
+  echo "[commit-msg] Rimuovere quei riferimenti e ripetere il commit." >&2
+  exit 1
+fi
+
+# Composizione con un hook proprio del repository: `atk scaffold --hooks --adopt-hook` sposta qui accanto il
+# `commit-msg` preesistente come `commit-msg.local`, che gira dopo questo controllo (il suo esito decide il commit).
+local_hook="$(dirname "$0")/commit-msg.local"
+if [[ -x "$local_hook" ]]; then
+  exec "$local_hook" "$@"
+fi
