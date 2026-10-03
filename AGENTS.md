@@ -39,10 +39,10 @@ Quando in un task impari qualcosa di **carattere generale** (un errore che chiun
 
 Il frontmatter di un README item ha `status` con **uno solo** di questi valori, scritti così: `open`, `in_progress`, `waiting_vendor`, `waiting_customer`, `planned`, `monitoring`, `resolved`, `closed` (significati in `agent-toolkit/docs/CONTEXT.md`, sezione «Vocabolario di status»). Mai una frase nello `status`: il dettaglio (data, motivo, cosa si attende) va in `status_note`. Quando cambia lo stato di un item, nello stesso task si aggiorna `status` nel README **e** la riga di stato nel registro riassuntivo del dossier, se esiste (es. `REGISTRO_TICKET.md`), dove lo stato inizia con lo stesso valore canonico: `- **Stato:** resolved (28/08/2026, batteria sbloccata)`. Dove ogni unità ha un README, il README è la fonte di verità e il registro riassuntivo è una vista che serve a leggere in fretta senza aprire ogni cartella; dove le unità sono righe o sezioni di un tracker senza README, la fonte di verità è il tracker `.md` (regola «Formato dei tracker»). Lo stesso insieme di unità ha una sola fonte di verità, mai due. Il campo `status` è riservato allo stato di un'unità: il ruolo di un file (registro, tracker) si scrive in `role` (`role: registro`), mai in `status`. `atk context lint` avvisa degli `status` fuori vocabolario e `atk context normalize-status` li porta al vocabolario.
 
-<!-- atk-scaffold:flusso-di-lavoro-tra-agenti 711507ab -->
+<!-- atk-scaffold:flusso-di-lavoro-tra-agenti 4959e362 -->
 ## Flusso di lavoro tra agenti
 
-Chi riceve un task legge `.agent/STATE.md` e lo classifica: una **DECISIONE** richiede una scelta dell'utente (proporre le opzioni, non decidere da soli), una **OPERAZIONE** si esegue secondo le regole del repository. Non c'è una divisione fissa di aree tra gli agenti con accesso diretto al repository. Commit e push solo su richiesta dell'utente.
+Chi riceve un task legge `.agent/STATE.md` e lo classifica: una **DECISIONE** richiede una scelta dell'utente (proporre le opzioni, non decidere da soli), una **OPERAZIONE** si esegue secondo le regole del repository. Non c'è una divisione fissa di aree tra gli agenti con accesso diretto al repository.
 
 **Budget di lettura:** <documento di sintesi del progetto>, poi le ultime voci di `.agent/STATE.md`; i documenti di dettaglio solo se il task li richiede.
 
