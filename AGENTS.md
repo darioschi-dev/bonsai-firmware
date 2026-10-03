@@ -67,3 +67,15 @@ Una modifica non lascia residui. Se cambia una regola, un formato o un dato, nel
 ## Messaggi di commit
 
 Nel messaggio di un commit o di una PR non compare alcun riferimento all'AI: né `Co-Authored-By` né firme, né il nome di un assistente o di un modello (Claude, Sonnet, Opus, Codex, GPT, Gemini e simili), nemmeno per dire chi ha fatto cosa: quello sta in `.agent/STATE.md`. Il messaggio descrive cosa cambia nel repository. La regola è imposta da `.githooks/commit-msg`, che rifiuta il commit (anche quelli fatti a mano): lo installa `atk scaffold --hooks --apply`, che imposta anche `git config core.hooksPath .githooks` (impostazione locale: dopo ogni clone, anche su Ubuntu, va rifatta con lo stesso comando) e `atk doctor` avvisa se manca.
+
+<!-- atk-scaffold:chiusura-del-lavoro-e-stato-as-is 945e408d -->
+## Chiusura del lavoro e stato as-is
+
+`.agent/AS-IS.md` è il riepilogo corto, con lo stesso nome in ogni repository, di com'è oggi il sistema, produzione compresa: cosa gira e in quale versione, cosa non esiste ancora o è dismesso, con data e fonte della verifica, e rimandi ai documenti di dettaglio. Non è un diario né un elenco di cose da fare. Un lavoro da fare è un'issue GitHub (repository di codice) o una scheda (dossier); il «Prossimo passo o blocchi» del registro rimanda al suo numero (`#N`) oppure scrive «nessuno».
+
+A chiusura di un lavoro completato e verificato, nello stesso task e prima di dichiararlo chiuso: (1) se c'è un'issue GitHub collegata, aggiornala con un commento con l'esito e il commit e chiudila se il lavoro è finito (`Closes #N` nel messaggio di commit); se non c'è un'issue, il messaggio di commit dice «senza issue». (2) Se il lavoro ha risolto qualcosa che era aperto, o ha portato in produzione qualcosa che era un'issue o era segnato come inesistente, aggiorna `.agent/AS-IS.md` e la sua data di verifica. (3) Se il lavoro nasce da un task Google e il legame è scritto (id o titolo nell'issue, nella scheda o nella voce di registro), proponi all'utente di completarlo; lo completi solo con il suo ok in quella sessione. Non crei né modifichi task di tua iniziativa.
+
+<!-- atk-scaffold:documenti c4917e1d -->
+## Documenti (`docs/`)
+
+La cartella `docs/` contiene solo documenti vivi e leggibili. Ogni documento vivo ha sotto il titolo la riga `> **Stato:** vivo — **Verificato il:** AAAA-MM-GG — **Controlla se cambia:** `percorso`, `altro/percorso``: la data è l'ultima volta che qualcuno ha confrontato il testo con la realtà, e i percorsi sono ciò che, se cambia, lo rende da ricontrollare. Un documento superato, una bozza chiusa o un duplicato si sposta con `git mv` in `docs/storico/` (non si cancella) e non si legge per default. `docs/INDEX.md` è generato (`atk docs index --apply`) e non si modifica a mano. Quando un lavoro cambia ciò che un documento descrive, lo si aggiorna nello stesso task e se ne aggiorna la data; `atk docs check` e `atk doctor` segnalano quelli da ricontrollare, i superati fuori da `docs/storico/` e un indice non aggiornato.
