@@ -55,3 +55,11 @@
 - File o commit: `src/mail.cpp`, `src/main.cpp`, `src/webserver.cpp`, `src/webserver.h`, `src/ap_password.cpp`, `src/ap_password.h`, `tools/ap_password.py`, `Readme.md`, `.agent/AS-IS.md`; commit con `[skip ci]`, quindi nessun rilascio OTA automatico.
 - Prossimo passo o blocchi: prima del prossimo rilascio provare su un dispositivo l'AP con la password derivata (e avvisare che `bonsai123` non vale più); un push successivo su `master` senza `[skip ci]` rilascia anche queste modifiche; decidere se aggiungere un setter per le credenziali mail.
 - Soggetto: firmware-sicurezza
+
+## 2026-10-04 22:03 CEST — Claude (Sonnet 5.5, session id e04c47d1-c544-4e70-8dad-56c6cffa4c14) — OPERAZIONE — id: REGOLA-PROJECT-ALIGNER-PROPAGATA-20261004
+
+- Decisione o attività: aggiunta con `atk scaffold --merge --update` la sezione gestita «Allineamento del progetto (skill `project-aligner`)» al file guida: in questo repository di codice, all'inizio e alla chiusura di un lavoro e prima e dopo un rilascio in produzione si segue la skill globale `project-aligner`. Ricevono anche la regola «Test prima del codice»: prima non erano riconosciuti come repository di codice.
+- Verifiche o fonti: [V] il tipo `coding` viene dal registro dei domini (`~/.config/agent-toolkit/domains.yaml`); cambiate solo le righe del marcatore e dei paragrafi aggiunti (`git diff --numstat`).
+- File o commit: `AGENTS.md` o `CLAUDE.md` (dove `AGENTS.md` è un collegamento); commit di questa voce.
+- Prossimo passo o blocchi: nessuno.
+- Soggetto: regole-project-aligner
