@@ -1,5 +1,7 @@
 # Bonsai IoT - Firmware Improvements Roadmap
 
+> **Stato:** storico — roadmap di 15 miglioramenti duplicata dalle issue aperte (#6-#28); parte già realizzata nel codice (watchdog, power save, NTP)
+
 ## 🔒 Security & Reliability
 
 ### 1. **Watchdog Timer Enhancement**
