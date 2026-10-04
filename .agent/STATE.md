@@ -63,3 +63,11 @@
 - File o commit: `AGENTS.md` o `CLAUDE.md` (dove `AGENTS.md` è un collegamento); commit di questa voce.
 - Prossimo passo o blocchi: nessuno.
 - Soggetto: regole-project-aligner
+
+## 2026-10-04 22:06 CEST — Claude (Sonnet 5.5, session id e04c47d1-c544-4e70-8dad-56c6cffa4c14) — OPERAZIONE — id: INCIDENTE-RILASCIO-OTA-NON-VOLUTO-20261004
+
+- Decisione o attività: rilascio OTA non voluto. Alle 22:04 CEST (20:04Z) il push del commit `b46e9dd` («regole: sezione sull'allineamento del progetto…») su `master` è stato fatto **senza `[skip ci]`**, contro l'istruzione di Dario del 2026-10-04 («metti [skip-ci] nel messaggio di commit»): ha avviato il workflow `build.yml`, che ha creato il tag e la release GitHub `v1.4.25+202610042004`, compilato `master` e **caricato il firmware sul server OTA** prima che io annullassi l'esecuzione (annullata alle 22:05, ma il passaggio «Upload firmware to OTA server» era già riuscito). Il firmware v1.4.25 contiene le modifiche NON provate su un dispositivo del commit `cb31b98`: password dell'access point derivata dal `deviceId`, credenziali SMTP da NVS, `/api/soil` con le letture reali.
+- Verifiche o fonti: [V] `gh run list`/`gh run view` (esecuzione 37230679805, passaggi riusciti fino all'upload OTA, poi annullata); `gh release list`; il firmware controlla gli aggiornamenti all'avvio e su comando MQTT (`src/main.cpp:130`, `src/trigger_firmware_check.cpp:63`) e li applica se la versione disponibile è più nuova. [non verificato] se e quanti dispositivi hanno già scaricato v1.4.25; il comportamento del nuovo firmware su hardware.
+- File o commit: nessuno (voce di cronaca); commit di questa voce con `[skip ci]`.
+- Prossimo passo o blocchi: decisione di Dario sul ripristino (lasciare v1.4.25 oppure ripubblicare sull'OTA il codice precedente come versione più nuova); per i prossimi commit su `master` usare sempre `[skip ci]` (forma con lo spazio, riconosciuta da GitHub) finché le modifiche non sono provate su un dispositivo.
+- Soggetto: firmware-ota
