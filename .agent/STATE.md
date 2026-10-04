@@ -31,3 +31,11 @@
 - File o commit: `AGENTS.md`, questa voce.
 - Prossimo passo o blocchi: nessuno.
 - Soggetto: tipo-repository-dichiarato
+
+## 2026-10-04 16:17 CEST — Claude (Sonnet 5.5, session id e04c47d1-c544-4e70-8dad-56c6cffa4c14) — OPERAZIONE — id: AS-IS-DOCS-BONSAIFW-20261004
+
+- Decisione o attività: `.agent/AS-IS.md` compilato; archiviata in `docs/storico/` la lista dei miglioramenti del firmware (roadmap duplicata dalle issue: watchdog, risparmio energetico e NTP sono già nel codice).
+- Verifiche o fonti: [V] `esp_task_wdt`, `WIFI_PS_MIN_MODEM` e `configTime` presenti in `src/main.cpp`; ogni push su `master` rilascia automaticamente (ultima release `v1.4.22+202610031558`, CI riuscita). [non verificato] versione sul dispositivo, contenuto del server OTA, compilazione locale.
+- File o commit: `.agent/AS-IS.md`, `docs/`; commit di questa voce (la voce segue di poco il commit del lavoro).
+- Prossimo passo o blocchi: `ANALISI_ARCHITETTURA.md` punto 1 in parte superato (`WiFi.softAP` in `main.cpp:190`, con password di configurazione nel sorgente), punti 2 e 4 ancora veri (`globalSoil`/`globalPerc` mai assegnati; `mail.cpp:27-30` con credenziali segnaposto); issue #17 e #27 aperte ma il codice usa già `WIFI_PS_MIN_MODEM`; `PIANO_OPERATIVO.md` è un piano da portare in issue.
+- Soggetto: as-is-docs
