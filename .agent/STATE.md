@@ -79,3 +79,11 @@
 - File o commit: nessun file di codice; `master` contiene ancora le modifiche non rilasciate di `cb31b98` (password AP derivata, credenziali mail da NVS, `/api/soil`): il prossimo push su `master` senza `[skip ci]` le rilascia di nuovo; commit di questa voce con `[skip ci]`.
 - Prossimo passo o blocchi: provare le modifiche su un dispositivo prima del prossimo rilascio; usare `[skip ci]` in ogni commit su `master` fino ad allora.
 - Soggetto: firmware-ota
+
+## 2026-10-04 22:34 CEST — Claude (Sonnet 5.5, session id e04c47d1-c544-4e70-8dad-56c6cffa4c14) — OPERAZIONE — id: REGOLA-PROJECT-ALIGNER-AGGIORNATA-20261004
+
+- Decisione o attività: aggiornata con `atk scaffold --merge --update` la sezione gestita «Allineamento del progetto (skill `project-aligner`)» alla versione valida per ogni tipo di repository (il tipo anagrafato nel registro dei domini decide solo quali passi si applicano; la mappa evento → file sta nel `CLAUDE.md`).
+- Verifiche o fonti: [V] cambiate solo le righe del marcatore e del paragrafo (`git diff --numstat`: +2 -2).
+- File o commit: `AGENTS.md` o `CLAUDE.md` (dove `AGENTS.md` è un collegamento); commit di questa voce con `[skip ci]` (ogni push su master rilascia via OTA).
+- Prossimo passo o blocchi: nessuno.
+- Soggetto: regole-project-aligner
