@@ -130,7 +130,8 @@ Modifica `data/config.example.json` (e versioni `.prod` / `.test`) per:
 
 ### 🛡️ Robustezza e affidabilità
 
-- **WiFi timeout**: Connessione WiFi con timeout di 60 secondi; in caso di fallimento, il dispositivo attiva un AP "Bonsai-Setup-{deviceId}" (password: `bonsai123`) per configurazione manuale
+- **WiFi timeout**: Connessione WiFi con timeout di 60 secondi; in caso di fallimento, il dispositivo attiva un AP "Bonsai-Setup-{deviceId}" per configurazione manuale (password derivata dal dispositivo, vedi sotto)
+- **Password dell'AP di configurazione**: non è più la fissa `bonsai123`. È derivata dal `deviceId` (lo stesso dell'SSID, cioè il MAC senza due punti, minuscolo): 10 caratteri presi da SHA-256 della stringa `bonsai-ap-v1:<deviceId>`, su un alfabeto senza caratteri ambigui (`23456789abcdefghjkmnpqrstuvwxyz`). Per ottenerla: `python3 tools/ap_password.py <deviceId>`. I dispositivi aggiornati via OTA non accettano più `bonsai123`. Limite: l'algoritmo è pubblico per chi legge il repository (privato) e il `deviceId` compare nell'SSID, quindi la password è diversa per ogni dispositivo ma non è un segreto forte. Il firmware non la scrive mai in chiaro su Serial né nei log MQTT.
 - **MQTT backoff esponenziale**: Riconnessione al broker con backoff: 2s → 4s → 8s → ... → 60s max per evitare storm di riconnessioni
 - **Lettura periodica sensore**: Il sensore di umidità viene letto periodicamente in base a `measurement_interval` (non solo all'avvio), con ripubblicazione MQTT e rivalutazione stato pompa
 - **Deduplica telemetria**: I valori di umidità, batteria, RSSI e firmware vengono pubblicati su MQTT solo quando cambiano rispetto all'ultimo invio

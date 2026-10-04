@@ -1,6 +1,7 @@
 #include "mail.h"
 #include <WiFiClientSecure.h>
 #include "mbedtls/base64.h"
+#include <Preferences.h>
 
 // ------------------------------------------------------------
 // Base64 helper
@@ -21,17 +22,26 @@ String base64Encode(const String &data) {
 // ------------------------------------------------------------
 bool sendMail(const String& subject, const String& body)
 {
+    // Credenziali SMTP da NVS (namespace "mail"): chiavi server, user, pass, port (default 465)
+    Preferences mailPrefs;
+    mailPrefs.begin("mail", true);
+    String smtpServer = mailPrefs.getString("server", "");
+    String username   = mailPrefs.getString("user", "");
+    String password   = mailPrefs.getString("pass", "");
+    int smtpPort      = mailPrefs.getInt("port", 465);
+    mailPrefs.end();
+
+    if (smtpServer.isEmpty() || username.isEmpty()) {
+        Serial.println("[MAIL] SMTP non configurato (NVS namespace 'mail': server/user/pass/port): invio saltato");
+        return false;
+    }
+
     WiFiClientSecure client;
     client.setInsecure();
 
-    const char* smtp_server = "smtp.gmail.com";
-    const int smtp_port = 465;
-    const char* username = "xxx@gmail.com";
-    const char* password = "xxxx xxxx xxxx xxxx";
-
     Serial.println("[MAIL] Connessione al server SMTP...");
 
-    if (!client.connect(smtp_server, smtp_port)) {
+    if (!client.connect(smtpServer.c_str(), smtpPort)) {
         Serial.println("[MAIL] Connessione SMTP fallita");
         return false;
     }

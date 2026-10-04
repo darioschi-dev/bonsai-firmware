@@ -47,3 +47,11 @@
 - File o commit: `AGENTS.md` o `CLAUDE.md` (nei repository dove `AGENTS.md` è un collegamento); commit di questa voce.
 - Prossimo passo o blocchi: nessuno.
 - Soggetto: regole-documenti
+
+## 2026-10-04 17:31 CEST — Claude (Sonnet 5.5, session id e04c47d1-c544-4e70-8dad-56c6cffa4c14) — OPERAZIONE — id: FIRMWARE-SICUREZZA-20261004
+
+- Decisione o attività: su scelta di Dario del 2026-10-04 («puoi fare quello che vuoi, basta che metti [skip-ci] nel messaggio di commit»; usata la forma riconosciuta da GitHub `[skip ci]`) tre correzioni: (1) `src/mail.cpp`: server, utente e password SMTP non sono più nel sorgente ma in NVS (namespace `mail`), `sendMail` non tenta la connessione se non configurata (non ha chiamanti); (2) `src/webserver.cpp/.h`: `/api/soil` espone `soilValue` e `soilPercent` assegnati da `readSoil()` (prima sempre 0); (3) password dell'access point derivata dal dispositivo (`src/ap_password.cpp`, `tools/ap_password.py`, `Readme.md`), scelta di Dario fra quattro opzioni.
+- Verifiche o fonti: [V] `pio run` (esp32-prod) SUCCESS, flash 69,3%, RAM 16,0%; `tools/ap_password.py` dà `ja5kw4wmtt` per `aabbccddeeff` e `bw6tenm4fs` per `240ac4123456`, uguali al C++ compilato su host. [non verificato] nessuna prova su hardware (AP con la nuova password, NVS, digest mbedtls sul chip); `deviceId` vuoto all'avvio dell'AP darebbe una password uguale per tutti (nessun fallback aggiunto).
+- File o commit: `src/mail.cpp`, `src/main.cpp`, `src/webserver.cpp`, `src/webserver.h`, `src/ap_password.cpp`, `src/ap_password.h`, `tools/ap_password.py`, `Readme.md`, `.agent/AS-IS.md`; commit con `[skip ci]`, quindi nessun rilascio OTA automatico.
+- Prossimo passo o blocchi: prima del prossimo rilascio provare su un dispositivo l'AP con la password derivata (e avvisare che `bonsai123` non vale più); un push successivo su `master` senza `[skip ci]` rilascia anche queste modifiche; decidere se aggiungere un setter per le credenziali mail.
+- Soggetto: firmware-sicurezza

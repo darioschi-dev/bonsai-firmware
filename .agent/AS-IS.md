@@ -18,6 +18,15 @@ Il progetto è un firmware ESP32 (`board = esp32doit-devkit-v1`, framework Ardui
 
 Le issue sono tutte `OPEN` (`gh issue list --state open`, 2026-10-04), tra cui: TLS MQTT con verifica (#8, #25), brown-out e batteria (#7), media dei sensori (#6), dormita dinamica (#9, #22), rilevamento perdite (#10), backoff WiFi (#11), timestamp NTP sui messaggi (#12), OTA progressivo (#13), QoS 1 (#14), crash report (#15), metriche (#16), power save (#17, #27 — il codice usa già `WIFI_PS_MIN_MODEM`, quindi lo stato dell'issue non è riconciliato con il codice), misura del suolo solo al boot (#19), throttling MQTT (#20), report del watchdog via MQTT (#23), deduplicazione telemetria (#26). Il server OTA e il backend non stanno in questo repository (`ANALISI_ARCHITETTURA.md`: «Non incluso qui»).
 
+## Modifiche del 2026-10-04 nel repository, non ancora rilasciate sui dispositivi
+
+Committate con `[skip ci]`: nessun rilascio OTA parte da queste; arriveranno ai dispositivi con la prossima build di `master`.
+
+- `/api/soil` espone le letture reali (`soilValue`, `soilPercent` assegnate da `readSoil()`): prima restituiva sempre 0 (`globalSoil`/`globalPerc` mai assegnati, ora tolti).
+- `sendMail` non contiene più server, utente e password nel sorgente: li legge da NVS (namespace `mail`: `server`, `user`, `pass`, `port`) e, se non configurati, non tenta la connessione. Non ha nessun chiamante nel firmware.
+- La password dell'access point di configurazione (`Bonsai-Setup-<deviceId>`) non è più fissa: è derivata dal dispositivo (`src/ap_password.cpp`, SHA-256 di `bonsai-ap-v1:<deviceId>`, 10 caratteri) e si calcola con `python3 tools/ap_password.py <deviceId>`. Dopo l'OTA la vecchia password fissa non vale più. La derivazione è pubblica per chi legge il repository e conosce il `deviceId` dell'SSID: è per-dispositivo, non un segreto forte.
+- Build `pio run` (env `esp32-prod`) riuscita: flash 69,3%, RAM 16,0%. **Non provato su hardware**: avvio dell'AP con la nuova password, connessione di un client, lettura NVS, digest mbedtls sul chip (il confronto con Python è stato fatto su host con un'altra implementazione di SHA-256).
+
 ## Non verificato
 
 - Versione in esecuzione sul dispositivo e contenuto del server OTA.

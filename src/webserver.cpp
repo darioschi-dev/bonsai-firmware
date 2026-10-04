@@ -7,8 +7,9 @@
 
 AsyncWebServer server(80);
 
-int globalSoil = 0;
-int globalPerc = 0;
+// Letture reali del sensore, assegnate da readSoil() in main.cpp
+extern int soilValue;
+extern int soilPercent;
 
 extern PumpController* pumpController;
 
@@ -20,8 +21,8 @@ void setup_webserver(int pumpPin) {
 
   server.on("/api/soil", HTTP_GET, [pumpPin](AsyncWebServerRequest* req){
     StaticJsonDocument<512> doc;
-    doc["soilValue"] = globalSoil;
-    doc["percentage"] = globalPerc;
+    doc["soilValue"] = soilValue;
+    doc["percentage"] = soilPercent;
     if (pumpController) {
       doc["pumpStatus"] = pumpController->getState() ? "on" : "off";
     } else {

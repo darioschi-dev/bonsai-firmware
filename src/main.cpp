@@ -12,6 +12,7 @@
 
 #include "config.h"
 #include "mail.h"
+#include "ap_password.h"
 #include "webserver.h"
 #include "mqtt.h"
 #include "config_api.h"
@@ -187,7 +188,10 @@ void setup_wifi() {
     
     // Start Access Point
     String apSSID = "Bonsai-Setup-" + deviceId;
-    WiFi.softAP(apSSID.c_str(), "bonsai123"); // Simple password for setup
+    const String apPassword = deriveApPassword(deviceId);
+    WiFi.softAP(apSSID.c_str(), apPassword.c_str());
+    // Mai la password in chiaro su Serial/debugLog (MQTT): si ricava con tools/ap_password.py
+    Serial.println("AP password derivata: vedi tools/ap_password.py <deviceId>");
     
     IPAddress apIP = WiFi.softAPIP();
     Serial.println("AP Mode started");
