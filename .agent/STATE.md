@@ -39,3 +39,11 @@
 - File o commit: `.agent/AS-IS.md`, `docs/`; commit di questa voce (la voce segue di poco il commit del lavoro).
 - Prossimo passo o blocchi: `ANALISI_ARCHITETTURA.md` punto 1 in parte superato (`WiFi.softAP` in `main.cpp:190`, con password di configurazione nel sorgente), punti 2 e 4 ancora veri (`globalSoil`/`globalPerc` mai assegnati; `mail.cpp:27-30` con credenziali segnaposto); issue #17 e #27 aperte ma il codice usa già `WIFI_PS_MIN_MODEM`; `PIANO_OPERATIVO.md` è un piano da portare in issue.
 - Soggetto: as-is-docs
+
+## 2026-10-04 17:06 CEST — Claude (Sonnet 5.5, session id e04c47d1-c544-4e70-8dad-56c6cffa4c14) — OPERAZIONE — id: REGOLE-DOCUMENTI-PROPAGATE-20261004
+
+- Decisione o attività: aggiornata con `atk scaffold --merge --update` la sezione gestita «Documenti» del file guida (marcatore `atk-scaffold:documenti`): il limite di 8 documenti vivi è una linea guida sforabile con il motivo scritto nel registro, documenti solo in italiano, documenti generati con riga «generato».
+- Verifiche o fonti: [V] cambiate solo due righe del file guida (marcatore e paragrafo), controllate con `git diff --numstat`.
+- File o commit: `AGENTS.md` o `CLAUDE.md` (nei repository dove `AGENTS.md` è un collegamento); commit di questa voce.
+- Prossimo passo o blocchi: nessuno.
+- Soggetto: regole-documenti
