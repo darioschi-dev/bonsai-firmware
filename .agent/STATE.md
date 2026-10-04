@@ -71,3 +71,11 @@
 - File o commit: nessuno (voce di cronaca); commit di questa voce con `[skip ci]`.
 - Prossimo passo o blocchi: decisione di Dario sul ripristino (lasciare v1.4.25 oppure ripubblicare sull'OTA il codice precedente come versione più nuova); per i prossimi commit su `master` usare sempre `[skip ci]` (forma con lo spazio, riconosciuta da GitHub) finché le modifiche non sono provate su un dispositivo.
 - Soggetto: firmware-ota
+
+## 2026-10-04 22:10 CEST — Claude (Sonnet 5.5, session id e04c47d1-c544-4e70-8dad-56c6cffa4c14) — OPERAZIONE — id: RIPRISTINO-OTA-V1426-20261004
+
+- Decisione o attività: rettifica della voce `INCIDENTE-RILASCIO-OTA-NON-VOLUTO-20261004`. Su scelta di Dario («ripubblico il codice precedente») lanciato `workflow_dispatch` di `build.yml` dal tag `v1.4.24+202610041507` (commit `df2558e`, codice senza le modifiche non provate) con `force_version=v1.4.26+202610042209`: tag, release GitHub e firmware caricato sul server OTA riusciti (esecuzione 37230978159); `v1.4.26` è ora la più nuova (`Latest`), quindi i dispositivi che non avevano ancora scaricato `v1.4.25` e quelli che l'avevano scaricata passano al codice di prima al prossimo controllo. La release `v1.4.25+202610042004` e il suo tag restano su GitHub (non cancellati).
+- Verifiche o fonti: [V] il tag di partenza ha ancora la password fissa in `src/main.cpp`, nessun `src/ap_password.*` e le costanti SMTP segnaposto in `src/mail.cpp`; `gh release list` mostra `v1.4.26` come Latest; passaggi di build e di upload OTA riusciti. [non verificato] quanti dispositivi avessero già installato `v1.4.25` e se abbiano già controllato di nuovo; funzionamento sul dispositivo.
+- File o commit: nessun file di codice; `master` contiene ancora le modifiche non rilasciate di `cb31b98` (password AP derivata, credenziali mail da NVS, `/api/soil`): il prossimo push su `master` senza `[skip ci]` le rilascia di nuovo; commit di questa voce con `[skip ci]`.
+- Prossimo passo o blocchi: provare le modifiche su un dispositivo prima del prossimo rilascio; usare `[skip ci]` in ogni commit su `master` fino ad allora.
+- Soggetto: firmware-ota
