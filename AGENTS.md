@@ -29,10 +29,10 @@ Ogni voce di `.agent/STATE.md` ha un heading `## AAAA-MM-GG HH:MM TZ — <agente
 
 Una voce di `.agent/STATE.md` che tratta una questione precisa (un ticket, un impianto, una pratica, una decisione) scrive il bullet `- Soggetto: <soggetto>` con un valore breve, stabile e specifico (es. `T019`, `novoli-ups`), sempre lo stesso per la stessa questione. `atk context brief` mostra come aperto solo il «Prossimo passo o blocchi» della voce più recente di ogni soggetto: una voce nuova sullo stesso soggetto supera le precedenti, anche se scrive «nessuno», senza bisogno di `Chiude:`. Due questioni diverse con lo stesso soggetto si oscurano a vicenda: nel dubbio scegliere il valore più specifico. Senza `Soggetto:` la voce si comporta come prima; le voci storiche non si riscrivono. Un ticket o un item il cui `status` cambia per una decisione registrata va aggiornato nello stesso task (il brief legge anche quello).
 
-<!-- atk-scaffold:lezioni-dal-campo b9f22651 -->
+<!-- atk-scaffold:lezioni-dal-campo d8df1a10 -->
 ## Lezioni dal campo
 
-Quando in un task impari qualcosa di **carattere generale** (un errore che chiunque potrebbe ripetere, un'abitudine che ha evitato un danno), scrivilo nella voce di `.agent/STATE.md` con il bullet `- Lezione: <una regola, con l'esempio che l'ha originata>` (un bullet per lezione). `atk lessons` le raccoglie da tutti i diari e le propone a Dario: una lezione entra nelle regole o nelle skill (`delegate/LESSONS.md`) solo se lui la conferma. Non serve per la cronaca del lavoro (sta in «Decisione o attività») né per ciò che vale solo per questo repository (quello è una decisione vigente).
+Quando in un task impari qualcosa di **carattere generale** (un errore che chiunque potrebbe ripetere, un'abitudine che ha evitato un danno), scrivilo nella voce di `.agent/STATE.md` con il bullet `- Lezione: <una regola, con l'esempio che l'ha originata>` (un bullet per lezione). `atk lessons` le raccoglie da tutti i diari e le propone a Dario: una lezione diventa uno strumento o un hook, la regola di una skill, una regola globale, una regola di `AGENTS.md` o una nota di delega (`delegate/LESSONS.md`) solo se lui la conferma, e la destinazione dipende dal tipo di errore. Non serve per la cronaca del lavoro (sta in «Decisione o attività») né per ciò che vale solo per questo repository (quello è una decisione vigente).
 
 <!-- atk-scaffold:stato-degli-item 65686a5b -->
 ## Stato degli item (frontmatter dei README)
