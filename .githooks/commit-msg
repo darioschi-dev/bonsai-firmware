@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# atk-managed: commit-msg 613a955b
+# atk-managed: commit-msg 37d86d08
 # Regola del workspace: nessun riferimento ad assistenti o modelli automatici nei messaggi di commit (vedi AGENTS.md).
 # Installato da `atk scaffold --hooks`, che imposta anche `git config core.hooksPath .githooks` (locale a ogni clone; lo controlla `atk doctor`).
 
@@ -36,6 +36,85 @@ if [[ -n "$matches" ]]; then
   printf '  riga %s\n' "$matches" >&2
   echo "[commit-msg] Rimuovere quei riferimenti e ripetere il commit." >&2
   exit 1
+fi
+
+# Collegamento commit–issue: l'indice contiene i file del commit, anche con
+# directory sporca o `git commit --only`. --no-renames conta entrambi i lati
+# di una rinomina, -z preserva spazi e ritorni a capo nei nomi.
+subject="$(sed -n '/^[^#]/ { p; q; }' "$msg_file")"
+exempt=false
+case "$subject" in
+  Merge\ *|Revert\ *|fixup\!*|squash\!*) exempt=true ;;
+esac
+merge_head="$(git rev-parse --git-path MERGE_HEAD)"
+revert_head="$(git rev-parse --git-path REVERT_HEAD)"
+if [[ -f "$merge_head" || -f "$revert_head" ]]; then
+  exempt=true
+fi
+
+if [[ "$exempt" == false ]] && ! grep -E '#[0-9]+|senza issue' <<< "$body" > /dev/null; then
+  # commit-msg riceve solo il file messaggio: il comando padre distingue
+  # --amend, che Git non espone all'hook. Se il processo non è leggibile,
+  # un riferimento esplicito evita di accettare una rettifica non verificata.
+  if ! parent_args="$(ps -ww -p "$PPID" -o args= 2>/dev/null)" || [[ -z "$parent_args" ]]; then
+    echo "[commit-msg] Impossibile distinguere commit e --amend: processo padre non leggibile." >&2
+    echo "[commit-msg] Aggiungere #N oppure 'senza issue' (es. 'rettifica Refs #123')." >&2
+    exit 1
+  fi
+  # ps non conserva la separazione degli argomenti: una menzione isolata
+  # di --amend nel messaggio applica prudenzialmente il controllo più ampio.
+  amend=false
+  for option in --am --ame --amen --amend; do
+    [[ " $parent_args " == *" $option "* ]] && amend=true
+  done
+  previous="HEAD"
+  if [[ "$amend" == true ]]; then
+    previous="$(git rev-parse --verify HEAD^ 2>/dev/null || git hash-object -t tree /dev/null)"
+  elif ! git rev-parse --verify HEAD > /dev/null 2>&1; then
+    previous="$(git hash-object -t tree /dev/null)"
+  fi
+  paths_file="$(mktemp)"
+  trap 'rm -f "$paths_file"' EXIT
+  if [[ "$amend" == true ]] && git rev-parse --verify HEAD^2 > /dev/null 2>&1; then
+    : > "$paths_file"  # Anche una rettifica con titolo diverso resta un commit di merge.
+  elif ! git diff --cached --name-only --no-renames -z "$previous" -- > "$paths_file"; then
+    echo "[commit-msg] Impossibile verificare i file in stage; commit rifiutato." >&2
+    exit 1
+  fi
+  while IFS= read -r -d '' path; do
+    case "$path" in
+      docs/*|.agent/*) continue ;;
+      *.md) [[ "$path" != */* ]] && continue ;;
+    esac
+    echo "[commit-msg] Commit rifiutato: una modifica di codice richiede #N oppure la frase 'senza issue'." >&2
+    echo "[commit-msg] Esempi: 'corregge il controllo Refs #123' oppure 'corregge il controllo — senza issue'." >&2
+    exit 1
+  done < "$paths_file"
+  rm -f "$paths_file"
+  trap - EXIT
+fi
+
+# Ora delle voci di registro: si legge con `date`, non si scrive a stima (regola «Mai inventare», ripetuta dal
+# 2026-10-13). Le voci AGGIUNTE a `.agent/STATE.md` da questo commit devono avere un'ora non posteriore
+# all'orologio e non più vecchia di tre ore. Una ricostruzione storica intenzionale lo dichiara con
+# ATK_ALLOW_OLD_ENTRY=1; durante un rebase il controllo è saltato (le voci hanno la loro ora d'origine).
+if [[ -z "${ATK_ALLOW_OLD_ENTRY:-}" && -f ".agent/STATE.md" ]] \
+   && [[ ! -d "$(git rev-parse --git-path rebase-merge)" && ! -d "$(git rev-parse --git-path rebase-apply)" ]]; then
+  now="$(date '+%Y-%m-%d %H:%M')"
+  floor="$(date -v-180M '+%Y-%m-%d %H:%M' 2>/dev/null || date -d '180 minutes ago' '+%Y-%m-%d %H:%M')"
+  wrong=""
+  while IFS= read -r added; do
+    stamp="${added:4:16}"
+    if [[ "$stamp" > "$now" || "$stamp" < "$floor" ]]; then
+      wrong+="  ${added:1:70}"$'\n'
+    fi
+  done < <(git diff --cached -U0 --no-renames -- .agent/STATE.md 2>/dev/null | grep -E '^\+## [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}' || true)
+  if [[ -n "$wrong" ]]; then
+    echo "[commit-msg] Commit rifiutato: l'ora di una voce di .agent/STATE.md non coincide con l'orologio (adesso: $now):" >&2
+    printf '%s' "$wrong" >&2
+    echo "[commit-msg] L'ora va letta con \`date\` nello stesso comando che scrive la voce (T=\$(date '+%Y-%m-%d %H:%M %Z')), non stimata. Correggere l'heading; per una ricostruzione storica: ATK_ALLOW_OLD_ENTRY=1 git commit ..." >&2
+    exit 1
+  fi
 fi
 
 # Composizione con un hook proprio del repository: `atk scaffold --hooks --adopt-hook` sposta qui accanto il

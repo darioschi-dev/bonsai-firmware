@@ -87,3 +87,11 @@
 - File o commit: `AGENTS.md` o `CLAUDE.md` (dove `AGENTS.md` è un collegamento); commit di questa voce con `[skip ci]` (ogni push su master rilascia via OTA).
 - Prossimo passo o blocchi: nessuno.
 - Soggetto: regole-project-aligner
+
+## 2026-10-17 19:23 CEST — Claude (Sonnet 5.5, session id c266f026-86d0-4a2d-98c3-3da0152d6280) — OPERAZIONE — id: HOOK-COMMIT-MSG-AGGIORNATO-20261017
+
+- Soggetto: bonsai-firmware
+- Decisione o attività: aggiornato .githooks/commit-msg al template di agent-toolkit con `atk scaffold --update --apply --hooks` (il doctor lo segnalava più vecchio): controlla anche l'orario delle voci di registro e richiede #N o «senza issue» nel messaggio di commit.
+- Verifiche o fonti: [V] dry-run e apply; [V] il solo file modificato è .githooks/commit-msg; [V] repository pulito e senza voci in AGENT-ACTIVE.md prima di iniziare.
+- File o commit: .githooks/commit-msg, .agent/STATE.md.
+- Prossimo passo o blocchi: nessuno.
