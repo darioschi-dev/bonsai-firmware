@@ -44,3 +44,7 @@ Committate con `[skip ci]`: nessun rilascio OTA parte da queste; arriveranno ai 
 - `ANALISI_ARCHITETTURA.md`: analisi dell'architettura (vedi discrepanze sopra).
 - `PIANO_OPERATIVO.md`: piano operativo a fasi.
 - `docs/INDEX.md`: indice generato; `docs/storico/`: documenti superati.
+
+## Stato dichiarato dal proprietario (2026-11-03)
+
+Il progetto non è in funzione: il proprietario riferisce che l'hardware non parte da molto tempo (manca un modulo step-up; non è verificato se l'ESP32 funzioni ancora né se il sensore di umidità del terreno dia letture corrette). Per ora è un progetto vetrina. Quando riprenderà il lavoro, ripartirà dall'hardware fino al firmware, con un audit hardware completo. Di conseguenza: nessuna build o release è necessaria adesso; `master` resta com'è (la CI compila solo se cambia il codice); il passaggio a `espressif32` 8.0.0 è preparato sul ramo `esp32-platform-8.0.0` ma non è stato provato su un dispositivo e usa il 93,1% della partizione app (con la 7.1.3: 69,3%). Fonte: messaggio del proprietario, 2026-11-03; non verificato dall'assistente.

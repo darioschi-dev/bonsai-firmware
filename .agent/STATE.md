@@ -130,3 +130,11 @@
 - Verifiche o fonti: pio run, firmware.map, xtensa-esp32-elf-nm e -size; partitions_ota.csv (app0 e app1 da 0x190000, spiffs 0xD0000).
 - File o commit: nessun file di codice cambiato per le ottimizzazioni; ramo esp32-platform-8.0.0 (d058c96) invariato.
 - Prossimo passo o blocchi: decisione di Dario su cosa mettere su master (7.1.3 o 8.0.0) e se ridurre funzioni per recuperare spazio.
+
+## 2026-11-03 17:28 CET — Claude (Sonnet 5.5, session id 97e5904c-9e6f-431a-939d-6f9647d93ee3) — DECISIONE — id: BONSAI-STATO-VETRINA-20261103
+
+- Soggetto: bonsai-stato-progetto
+- Decisione o attività: alla domanda su cosa mettere su master Dario risponde che il progetto non funziona: l'hardware non parte da molto tempo (manca un modulo step-up; non sa se l'ESP32 funzioni ancora né se il sensore di umidità del terreno legga dati buoni), per ora è solo un progetto vetrina, e quando riprenderà il lavoro lo riprenderà completamente dall'hardware al firmware, con un audit profondo sull'hardware. Quindi nessuna release né OTA adesso: master resta com'è; il ramo esp32-platform-8.0.0 (d058c96) resta preparato e non provato; la CI parte solo con modifiche al codice. Chiusa la scelta «cosa mettere su master» (nulla). Annotato in .agent/AS-IS.md («Stato dichiarato dal proprietario») e aperta la issue darioschi-dev/bonsai-firmware#30 (audit hardware completo).
+- Verifiche o fonti: messaggio di Dario del 03/11/2026; non verificato dall'assistente (nessuna prova sull'hardware).
+- File o commit: .agent/AS-IS.md, questa voce; issue #30.
+- Prossimo passo o blocchi: nessuno finché Dario non riprende il progetto; le altre issue aperte (#7, #8, #25, ecc.) dipendono dall'audit hardware.
