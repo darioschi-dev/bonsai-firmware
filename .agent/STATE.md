@@ -104,3 +104,12 @@
 - File o commit: src/wifi_backoff.h, src/main.cpp (commit 2d70fb9); nessuna modifica di codice per le dodici chiusure per verifica (solo commenti GitHub); questa voce.
 - Prossimo passo o blocchi: #12 (timestamp ISO8601) e #5 (verifica rollback OTA su hardware) restano aperte, serve una sessione con accesso a un ESP32 fisico o una decisione su formato payload MQTT; #7 richiede a Dario le specifiche del partitore di tensione della batteria prima di poter calcolare una percentuale reale.
 - Lezione: in questo repository ogni push su master senza `[skip ci]` innesca un rilascio OTA reale (vedi voce INCIDENTE-RILASCIO-OTA-NON-VOLUTO-20261004): per qualunque commit di codice non ancora provato su hardware, `[skip ci]` è obbligatorio, non opzionale.
+
+## 2026-11-03 17:04 CET — Claude (Sonnet 5.5, session id 97e5904c-9e6f-431a-939d-6f9647d93ee3) — OPERAZIONE — id: CI-SOLO-SU-CODICE-20261103
+
+- Soggetto: ci-build-ota
+- Decisione o attività: su richiesta di Dario il workflow build.yml parte ora solo se cambiano src/, include/, lib/, data/, scripts/, platformio.ini o partitions_ota.csv (filtro paths su push; workflow_dispatch resta). Il workflow stesso non è tra i percorsi, perché modificarlo non deve produrre un firmware e un upload OTA. Verificato su YAML valido e sugli ultimi 6 commit: 5 (documenti, registro, hook) non avrebbero fatto partire la build, 1 (2d70fb9, firmware) sì.
+- Causa del problema: dal 04/10 ogni push su master faceva partire build, tag e release, anche per documenti e hook. Oggi due mie push (AGENTS.md 14:03 e hook commit-msg 15:59) hanno fatto partire due build, entrambe fallite al passo di compilazione (src/main.cpp:339, esp_task_wdt_init(8, true) a due argomenti non accettato dalla versione attuale di Arduino-ESP32; la riga è del 11/11/2025, la piattaforma espressif32 non è fissata in platformio.ini e l'ultima build riuscita è del 04/10). Prima della compilazione il workflow ha però già creato i tag v1.4.27+202611031403 e v1.4.28+202611031600 e le due release GitHub (senza firmware.bin, perché la compilazione è fallita); l'upload al server OTA è un passo successivo e non è stato eseguito.
+- Verifiche o fonti: gh run list e view, git ls-remote --tags, log della corsa fallita.
+- File o commit: .github/workflows/build.yml, questa voce.
+- Prossimo passo o blocchi: decisione di Dario su (1) le due release e i due tag vuoti, (2) la correzione della chiamata esp_task_wdt_init o il blocco della versione della piattaforma.
