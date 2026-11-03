@@ -19,6 +19,7 @@
 #include "logger.h"
 #include "telnet_logger.h"
 #include "pump_controller.h"
+#include "wifi_backoff.h"
 
 #include "update/UpdateManager.h"
 #include "update/FirmwareUpdateStrategy.h"
@@ -405,7 +406,34 @@ void setup() {
 
 void loop() {
   ArduinoOTA.handle();
-  
+
+  // WiFi reconnection with exponential backoff (issue #11): evita di
+  // martellare il router con tentativi a intervallo fisso quando il
+  // dispositivo resta sveglio (debug=true) e perde la connessione.
+  static int wifiReconnectAttempts = 0;
+  static unsigned long nextWifiReconnectAt = 0;
+  if (WiFi.status() != WL_CONNECTED) {
+    unsigned long nowMs = millis();
+    if (nowMs >= nextWifiReconnectAt) {
+      wifiReconnectAttempts++;
+      debugLog("WIFI: disconnesso, tentativo di riconnessione #" + String(wifiReconnectAttempts));
+      WiFi.reconnect();
+
+      // Dopo 5 tentativi falliti, deep sleep di recupero di 15 minuti —
+      // mai se la pompa è accesa (stessa cautela usata per lo sleep a fine ciclo).
+      if (wifiReconnectAttempts >= 5 && !(pumpController && pumpController->getState())) {
+        debugLog("WIFI: 5 tentativi falliti, deep sleep di recupero (15 min)");
+        esp_sleep_enable_timer_wakeup(15ULL * 60 * 1000000ULL);
+        delay(100);
+        esp_deep_sleep_start();
+      }
+
+      nextWifiReconnectAt = nowMs + wifiBackoffDelayMs(wifiReconnectAttempts);
+    }
+  } else {
+    wifiReconnectAttempts = 0;
+  }
+
   // Monitor pump runtime for safety failsafe
   if (pumpController) {
     pumpController->loop();
