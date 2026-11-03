@@ -113,3 +113,11 @@
 - Verifiche o fonti: gh run list e view, git ls-remote --tags, log della corsa fallita.
 - File o commit: .github/workflows/build.yml, questa voce.
 - Prossimo passo o blocchi: decisione di Dario su (1) le due release e i due tag vuoti, (2) la correzione della chiamata esp_task_wdt_init o il blocco della versione della piattaforma.
+
+## 2026-11-03 17:11 CET — Claude (Sonnet 5.5, session id 97e5904c-9e6f-431a-939d-6f9647d93ee3) — OPERAZIONE — id: PIATTAFORMA-8-0-0-RAMO-20261103
+
+- Soggetto: ci-build-ota
+- Decisione o attività: su scelta di Dario eliminate le due release vuote e i due tag (v1.4.27+202611031403, v1.4.28+202611031600; gh release delete --cleanup-tag); la numerazione riparte da v1.4.26. Su indicazione di Dario («se è uscita una nuova versione e possiamo usarla, mi trovi d'accordo») preparato il passaggio a espressif32 8.0.0 (Arduino-ESP32 3.3.12) sul ramo esp32-platform-8.0.0 (d058c96, non su master, per non lanciare build/release/OTA): platformio.ini fissato a 8.0.0 in entrambi gli ambienti e main.cpp con `#if ESP_ARDUINO_VERSION_MAJOR >= 3` (esp_task_wdt_reconfigure con timeout 8000 ms, panic attivo, idle task non sorvegliati; ramo #else invariato).
+- Verifiche o fonti: pio run -e esp32-prod in locale: con 7.1.3 (build pulita) SUCCESS, flash 69,3% (1.135.229 B di 1.638.400); con 8.0.0 SUCCESS, flash 93,1% (1.525.831 B di 1.638.400), RAM 16,7%. La build di CI fallita oggi usava 8.0.0 senza pin (framework 4.30312.261024) ed era fallita su esp_task_wdt_init; l'ultima riuscita (04/10) usava la 7.1.3. Non verificato: il comportamento su un dispositivo reale con Arduino-ESP32 3.x (WiFi, server asincrono, OTA, watchdog con idle task non sorvegliati, deep sleep), il codice di #11 del 03/11 (riconnessione WiFi, deep sleep) mai provato su dispositivo.
+- File o commit: ramo esp32-platform-8.0.0 (d058c96); questa voce.
+- Prossimo passo o blocchi: decisione di Dario su cosa mettere su master (il push su master lancia build, release e upload al server OTA): 8.0.0 (flash al 93%, non provata su dispositivo) oppure fissare 7.1.3 (flash 69%, compila come a ottobre).
