@@ -6,6 +6,17 @@ permissions:
 on:
   push:
     branches: [ master ]
+    # Una nuova build (e quindi un nuovo tag e una nuova release OTA) parte solo quando cambia
+    # qualcosa che entra nel firmware. Documentazione, registro, diagrammi, test e strumenti
+    # locali non la fanno partire. Il lancio manuale (workflow_dispatch) resta sempre possibile.
+    paths:
+      - 'src/**'
+      - 'include/**'
+      - 'lib/**'
+      - 'data/**'
+      - 'scripts/**'
+      - 'platformio.ini'
+      - 'partitions_ota.csv'
   workflow_dispatch:
     inputs:
       version_mode:
