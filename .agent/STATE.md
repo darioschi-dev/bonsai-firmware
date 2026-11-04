@@ -163,3 +163,11 @@
 - Verifiche o fonti: lettura di src/mqtt.cpp, issue #8 e #25, grep di epochMs/timeIsValid; nessun codice modificato. Non verificato: TLS su un broker reale (vedi MQTT-TLS-25).
 - File o commit: solo questa voce.
 - Prossimo passo o blocchi: #12 attende scelta del formato (topic separato status/timestamp oppure payload JSON), da porre a Dario quando riprende il progetto (#30).
+
+## 2026-11-04 21:56 CET — Claude (sonnet-5-5, session id c2b3bcc8-0eda-4d18-8e6f-bbd5d9512f93) — DECISIONE — id: OTA-ROLLBACK-5-BLOCCO
+
+- Soggetto: ota-rollback
+- Decisione o attivita: issue #5 esaminata, nessun codice scritto. CONFIG_BOOTLOADER_APP_ROLLBACK_ENABLE=y nel framework in uso (sdkconfig del pacchetto framework-arduinoespressif32), ma src/main.cpp:304 marca l'app valida subito all'inizio di setup(), quindi il rollback non scatta mai. Il criterio di validazione e' una scelta di Dario: domanda posta sulla issue con risposta consigliata (validare a fine setup() con config caricata e loop raggiunto, senza richiedere WiFi/MQTT). Esaminate anche #15 e #16: i topic richiesti (bonsai/crash/*, bonsai/metrics/*) non seguono la convenzione bonsai/<device_id>/..., decisione necessaria; #7, #10, #12, #14 gia' bloccate da hardware o da decisioni.
+- Verifiche o fonti: gh issue view, grep ROLLBACK nello sdkconfig, lettura di src/main.cpp. Non verificato: comportamento del rollback su dispositivo.
+- File o commit: solo questa voce; commento sulla issue #5.
+- Prossimo passo o blocchi: attende la risposta di Dario sulla #5.
