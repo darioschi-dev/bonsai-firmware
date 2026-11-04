@@ -171,3 +171,11 @@
 - Verifiche o fonti: gh issue view, grep ROLLBACK nello sdkconfig, lettura di src/main.cpp. Non verificato: comportamento del rollback su dispositivo.
 - File o commit: solo questa voce; commento sulla issue #5.
 - Prossimo passo o blocchi: attende la risposta di Dario sulla #5.
+
+## 2026-11-04 21:57 CET — Claude (sonnet-5-5, session id 627a6ea8-0792-4d56-9ee1-eb05aece315d) — OPERAZIONE — id: RASSEGNA-ISSUE-NESSUNA-RISOLVIBILE-20261104
+
+- Soggetto: issue-triage
+- Decisione o attivita: rassegna delle issue aperte (escluse #8 e #5 gia' tentate): nessuna risolvibile senza Dario o hardware. #13 (OTA a blocchi) richiede supporto Range sul server OTA del dashboard e prova su dispositivo; #15 e #16 usano topic bonsai/crash/* e bonsai/metrics/* fuori dalla convenzione bonsai/<device_id>/...; #7, #10, #12, #14 gia' bloccate; #28 e' una nota di processo; #30 e' l'audit hardware. Sul tracker #29 commentato che le voci su #17/#27 (CLOSED) e sul filtro dei percorsi del rilascio (build.yml, commit 1778464) sono superate.
+- Verifiche o fonti: gh issue list/view, lettura di .github/workflows/build.yml. Nessun codice modificato.
+- File o commit: solo questa voce.
+- Prossimo passo o blocchi: attende le decisioni di Dario gia' poste sulle issue #5, #12, #14 e la ripresa del progetto (#30).
