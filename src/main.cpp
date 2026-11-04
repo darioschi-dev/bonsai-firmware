@@ -336,7 +336,21 @@ void setup() {
   
   setupTelnetLogger("bonsai-esp32", 23);
 
+#if ESP_ARDUINO_VERSION_MAJOR >= 3
+  // Arduino-ESP32 3.x (IDF 5): il watchdog dei task e' gia' avviato dal core; si riconfigura.
+  // Come prima si sorveglia solo il task corrente (esp_task_wdt_add(NULL) piu' sotto), non gli idle task.
+  {
+    esp_task_wdt_config_t wdt_cfg = {};
+    wdt_cfg.timeout_ms = 8000;
+    wdt_cfg.idle_core_mask = 0;
+    wdt_cfg.trigger_panic = true;
+    if (esp_task_wdt_reconfigure(&wdt_cfg) != ESP_OK) {
+      esp_task_wdt_init(&wdt_cfg);
+    }
+  }
+#else
   esp_task_wdt_init(8, true);
+#endif
   esp_task_wdt_add(NULL);
 
   setupMqtt();
