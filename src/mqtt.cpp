@@ -1,4 +1,5 @@
 #include "mqtt.h"
+#include "mqtt_tls.h"
 #include "pump_controller.h"
 #include "trigger_firmware_check.h"
 
@@ -59,6 +60,7 @@ void publishConfigSnapshot()
   doc["wifi_password"]        = config.wifi_password;
   doc["mqtt_broker"]          = config.mqtt_broker;
   doc["mqtt_port"]            = config.mqtt_port;
+  doc["mqtt_tls"]             = config.mqtt_tls;
   doc["mqtt_username"]        = config.mqtt_username;
   doc["mqtt_password"]        = config.mqtt_password;
   doc["sensor_pin"]           = config.sensor_pin;
@@ -348,7 +350,14 @@ void setupMqtt()
 {
   setupDeviceId();
 
-  if (config.mqtt_port == 1883)
+  String caCert;
+  if (SPIFFS.exists(MQTT_CA_PATH)) {
+    File f = SPIFFS.open(MQTT_CA_PATH, "r");
+    if (f) { caCert = f.readString(); f.close(); }
+  }
+
+  MqttTlsMode mode = mqttTlsMode(config.mqtt_tls, config.mqtt_port, caCert.length() > 0);
+  if (mode == MqttTlsMode::Plain)
   {
     plainClient = new WiFiClient();
     mqttClient.setClient(*plainClient);
@@ -356,7 +365,15 @@ void setupMqtt()
   else
   {
     secureClient = new WiFiClientSecure();
-    secureClient->setInsecure();
+    if (mode == MqttTlsMode::CaVerified) {
+      // il buffer deve restare vivo: setCACert non copia la stringa
+      static String caCertKeep;
+      caCertKeep = caCert;
+      secureClient->setCACert(caCertKeep.c_str());
+    } else {
+      Serial.println("[MQTT] TLS senza CA: certificato non verificato (solo sviluppo)");
+      secureClient->setInsecure();
+    }
     mqttClient.setClient(*secureClient);
   }
 

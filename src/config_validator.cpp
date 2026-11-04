@@ -12,6 +12,7 @@ Config getDefaultConfig() {
   // MQTT - vuoto, deve essere configurato
   def.mqtt_broker = "";
   def.mqtt_port = 1883;
+  def.mqtt_tls = false;
   def.mqtt_username = "";
   def.mqtt_password = "";
   

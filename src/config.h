@@ -16,6 +16,7 @@ struct Config
   String mqtt_password;
   String mqtt_broker;
   int    mqtt_port;
+  bool   mqtt_tls;  // TLS verso il broker (implicito con porta 8883); CA opzionale in /mqtt_ca.pem su SPIFFS
 
   // Hardware
   int led_pin;

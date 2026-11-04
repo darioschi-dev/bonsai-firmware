@@ -8,6 +8,7 @@
   "mqtt_username": "your-mqtt-user",
   "mqtt_password": "your-mqtt-password",
   "mqtt_port": 1883,
+  "mqtt_tls": false,
   "led_pin": 4,
   "sensor_pin": 32,
   "pump_pin": 26,

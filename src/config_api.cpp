@@ -66,6 +66,7 @@ String configToJson(const Config& c)
 
     d["mqtt_broker"]   = c.mqtt_broker;
     d["mqtt_port"]     = c.mqtt_port;
+    d["mqtt_tls"]      = c.mqtt_tls;
     d["mqtt_username"] = c.mqtt_username;
     d["mqtt_password"] = c.mqtt_password;
 
@@ -110,6 +111,7 @@ bool jsonToConfig(const String& json, Config& out)
 
     if (d.containsKey("mqtt_broker"))   out.mqtt_broker   = d["mqtt_broker"].as<String>();
     if (d.containsKey("mqtt_port"))     out.mqtt_port     = d["mqtt_port"].as<int>();
+    if (d.containsKey("mqtt_tls"))      out.mqtt_tls      = d["mqtt_tls"].as<bool>();
     if (d.containsKey("mqtt_username")) out.mqtt_username = d["mqtt_username"].as<String>();
     if (d.containsKey("mqtt_password")) out.mqtt_password = d["mqtt_password"].as<String>();
 
@@ -181,6 +183,7 @@ bool loadConfig(Config& out)
         if (out.mqtt_username.length() > 0) def.mqtt_username = out.mqtt_username;
         if (out.mqtt_password.length() > 0) def.mqtt_password = out.mqtt_password;
         if (out.mqtt_port > 0 && out.mqtt_port <= 65535) def.mqtt_port = out.mqtt_port;
+        def.mqtt_tls = out.mqtt_tls;
         
         out = def;
         // Salva config corretto
