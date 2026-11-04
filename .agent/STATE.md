@@ -179,3 +179,11 @@
 - Verifiche o fonti: gh issue list/view, lettura di .github/workflows/build.yml. Nessun codice modificato.
 - File o commit: solo questa voce.
 - Prossimo passo o blocchi: attende le decisioni di Dario gia' poste sulle issue #5, #12, #14 e la ripresa del progetto (#30).
+
+## 2026-11-04 22:15 CET — Claude (sonnet-5-5, session id c8a7302b-1b99-4854-b547-b36a945d04a7) — CI-RUNNER-PIATTAFORMA: workflow OTA riparato senza rilascio
+
+- Decisione o attività: su ok di Dario (2026-11-04) il workflow Build & Upload OTA falliva dal 2026-10-17 circa per Python 3.9 assente su ubuntu-latest (26.04); runner fissato a ubuntu-24.04 e Python 3.11; piattaforma espressif32@8.0.0 e watchdog nuovo portati da origin/esp32-platform-8.0.0 (commit d058c96). Commit con [skip ci]: nessuna release OTA creata.
+- Verifiche o fonti: pio run -e esp32-prod su una copia: SUCCESS, flash 93,3%; dopo il push nessun nuovo run partito (gh run list). Non verificato: il workflow su GitHub con il runner nuovo e il firmware su dispositivo.
+- File o commit: .github/workflows/build.yml, platformio.ini, src/main.cpp, questa voce.
+- Prossimo passo o blocchi: il primo run reale parte al prossimo push che tocca src/ o platformio.ini e pubblica una release OTA: provare prima sul dispositivo dopo l'audit hardware (#30). Il ramo esp32-platform-8.0.0 e' ora incluso in master.
+- Soggetto: ci-runner-piattaforma
