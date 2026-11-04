@@ -147,3 +147,11 @@
 - File o commit: src/mqtt_tls.h, src/mqtt.cpp, src/config.h, src/config_api.cpp, src/config_validator.cpp, data/config.example.json, test/mqtt_tls; commit con [skip ci] per non lanciare la release OTA.
 - Prossimo passo o blocchi: prova su dispositivo dopo l'audit hardware (#30).
 - Lezione: `sed -i` su macOS richiede `-i ''`; per modifiche di testo preferire lo strumento Edit.
+
+## 2026-11-04 19:44 CET — Claude (sonnet-5-5, session id bd56be4c-9dad-49e1-aef0-93238a72b3ba) — DECISIONE — id: MQTT-QOS1-14-BLOCCO
+
+- Soggetto: mqtt-qos1
+- Decisione o attività: issue #14 (QoS 1 per i messaggi critici) esaminata, nessun codice scritto. La libreria PubSubClient in uso (.pio/libdeps/esp32-prod/PubSubClient) pubblica solo a QoS 0: `publish()` non ha parametro QoS e non gestisce il PUBACK (QoS 1 supportato solo in `subscribe(topic, qos)` e nella ricezione); il solo QoS 1 ottenibile è quindi sulle sottoscrizioni, che non sono i messaggi critici della issue. Per un vero QoS 1 in pubblicazione servono o un fork/estensione di PubSubClient (invio con msgId, attesa PUBACK, ritrasmissione con DUP) o il cambio di libreria (es. AsyncMqttClient, esp-mqtt), con impatto su flash e su mqtt.cpp. Inoltre: l'unico allarme oggi pubblicato è bonsai/<device_id>/alert/pump (main.cpp:444, retained); non esiste un allarme di batteria bassa (dipende da #7, in attesa dell'audit hardware #30); la strategia «bonsai/data/* vs bonsai/alerts/*» rinominerebbe topic che il dashboard (bonsai-dashboard, src/server.ts) sottoscrive oggi, contro il vincolo di CLAUDE.md.
+- Verifiche o fonti: lettura di PubSubClient.h/.cpp (grep QOS/PUBACK), src/mqtt.cpp, src/mqtt.h, src/main.cpp:441-445, platformio.ini. Non verificato: compatibilità flash di una libreria alternativa (la build su 8.0.0 è già al 93% di flash, vedi PIATTAFORMA-8-0-0-OTTIMIZZAZIONE-FLASH-20261103); comportamento del broker.
+- File o commit: solo questa voce; issue #14 resta aperta.
+- Prossimo passo o blocchi: attende decisione di Dario, vedi issue #14 (commento con le domande). Il progetto è in stato vetrina (#30), quindi nessuna urgenza.
