@@ -138,3 +138,12 @@
 - Verifiche o fonti: messaggio di Dario del 03/11/2026; non verificato dall'assistente (nessuna prova sull'hardware).
 - File o commit: .agent/AS-IS.md, questa voce; issue #30.
 - Prossimo passo o blocchi: nessuno finché Dario non riprende il progetto; le altre issue aperte (#7, #8, #25, ecc.) dipendono dall'audit hardware.
+
+## 2026-11-04 18:58 CET — Claude (sonnet-5-5, session id 61dc679c-f466-4589-b1b8-83026e7fd511) — OPERAZIONE — id: MQTT-TLS-25
+
+- Soggetto: mqtt-tls
+- Decisione o attività: issue #25. Nuova chiave di config `mqtt_tls` (default false) e funzione pura `mqttTlsMode(tlsFlag, port, hasCa)` in src/mqtt_tls.h: TLS se il flag è attivo o la porta è 8883; con TLS, verifica del certificato se esiste `/mqtt_ca.pem` su SPIFFS, altrimenti modalità insecure (solo sviluppo, con avviso su seriale). Prima ogni porta diversa da 1883 usava TLS insecure: ora una porta non standard senza flag resta in chiaro (cambio di comportamento voluto, da tenere presente se un broker usa TLS su una porta diversa da 8883: serve `mqtt_tls: true`). Il CA sta in un file e non nel JSON di config per non superare StaticJsonDocument<2048>.
+- Verifiche o fonti: test host test/mqtt_tls/test_mqtt_tls.cpp (g++), rosso prima dell'header e verde dopo; pio run -e esp32-prod su copia con espressif32@7.1.3: SUCCESS (flash 69,4%). Su master la build con la piattaforma non fissata fallisce per esp_task_wdt_init (main.cpp:339), problema già noto e non toccato (vedi PIATTAFORMA-8-0-0-RAMO-20261103). Non verificato: connessione TLS reale a un broker (nessun hardware), validazione del CA su dispositivo.
+- File o commit: src/mqtt_tls.h, src/mqtt.cpp, src/config.h, src/config_api.cpp, src/config_validator.cpp, data/config.example.json, test/mqtt_tls; commit con [skip ci] per non lanciare la release OTA.
+- Prossimo passo o blocchi: prova su dispositivo dopo l'audit hardware (#30).
+- Lezione: `sed -i` su macOS richiede `-i ''`; per modifiche di testo preferire lo strumento Edit.
