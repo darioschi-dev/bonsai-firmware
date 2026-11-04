@@ -155,3 +155,11 @@
 - Verifiche o fonti: lettura di PubSubClient.h/.cpp (grep QOS/PUBACK), src/mqtt.cpp, src/mqtt.h, src/main.cpp:441-445, platformio.ini. Non verificato: compatibilità flash di una libreria alternativa (la build su 8.0.0 è già al 93% di flash, vedi PIATTAFORMA-8-0-0-OTTIMIZZAZIONE-FLASH-20261103); comportamento del broker.
 - File o commit: solo questa voce; issue #14 resta aperta.
 - Prossimo passo o blocchi: attende decisione di Dario, vedi issue #14 (commento con le domande). Il progetto è in stato vetrina (#30), quindi nessuna urgenza.
+
+## 2026-11-04 21:55 CET — Claude (sonnet-5-5, session id 40b465c3-393f-4ff8-9820-7f2eaa5520b3) — OPERAZIONE — id: CHIUSURA-ISSUE-8-DUPLICATA-25
+
+- Soggetto: mqtt-tls
+- Decisione o attività: issue #8 (Encrypted MQTT with TLS) chiusa come duplicata di #25, già risolta dal commit bc446e0: WiFiClientSecure su TLS (porta 8883 o `mqtt_tls`), validazione opzionale del CA da /mqtt_ca.pem su SPIFFS, modalità insecure per sviluppo (src/mqtt.cpp:359-375). Esaminata anche #12 (timestamp ISO8601): la telemetria oggi pubblica valori nudi (es. status/humidity è un numero) e il dashboard marca il tempo da sé (new Date().toISOString() in server.ts), quindi aggiungere un timestamp al payload cambia il contratto MQTT: non fatta, serve una decisione di Dario.
+- Verifiche o fonti: lettura di src/mqtt.cpp, issue #8 e #25, grep di epochMs/timeIsValid; nessun codice modificato. Non verificato: TLS su un broker reale (vedi MQTT-TLS-25).
+- File o commit: solo questa voce.
+- Prossimo passo o blocchi: #12 attende scelta del formato (topic separato status/timestamp oppure payload JSON), da porre a Dario quando riprende il progetto (#30).
