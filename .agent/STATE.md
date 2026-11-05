@@ -203,3 +203,11 @@
 - File o commit: docs/voci_dai_task_google_2026-11-05.md, questa voce.
 - Prossimo passo o blocchi: ok di Dario sulla chiusura dei task con riferimento al file; poi eventuali issue per le voci con prossima azione concreta.
 - Soggetto: task-google
+
+## 2026-11-05 07:38 CET — Claude (Sonnet 5.5, session id e480e717-4dc1-45b1-903c-88d32baead98) — OPERAZIONE — id: TASK-GOOGLE-CHIUSI-0511-20261105
+
+- Decisione o attività: su autorizzazione esplicita di Dario (05/11/2026) chiusi in Google Tasks i 7 task importati in questo repository (lotto unico di 935 task su più repository, impronta e6a4612d...), con riferimento al file nelle note.
+- Verifiche o fonti: apply-batch con impronta dopo dry-run 935/0, backup automatico prima; apply_batch_20261105_063603.jsonl (935 completate).
+- File o commit: nessuno oltre a questa voce.
+- Prossimo passo o blocchi: Dario guarda il registro e corregge righe o categorie sbagliate; le voci con una prossima azione concreta diventano schede o issue.
+- Soggetto: task-google
