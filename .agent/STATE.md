@@ -195,3 +195,11 @@
 - Verifiche o fonti: test host test/ota_validity (g++): rosso prima dell'header, verde dopo; pio run -e esp32-prod su copia in cartella temporanea: SUCCESS, flash 93,3%. Non verificato: rollback reale su dispositivo (nessun flash, progetto in stato vetrina, #30). Nota: con debug=false il device dorme a fine ciclo, quindi la validazione avviene prima del deep sleep.
 - File o commit: src/main.cpp, src/ota_validity.h, test/ota_validity; commit con [skip ci], nessuna release OTA.
 - Prossimo passo o blocchi: prova su dispositivo dopo l'audit hardware (#30).
+
+## 2026-11-05 07:07 CET — Claude (Sonnet 5.5, session id e480e717-4dc1-45b1-903c-88d32baead98) — OPERAZIONE — id: TASK-GOOGLE-IMPORTATI-0511-20261105
+
+- Decisione o attività: su scelta di Dario (05/11/2026: ogni progetto nel suo repository; soldi e pratiche in ledger-home; famiglia d'origine in dossier-famiglia) importati in docs/voci_dai_task_google_2026-11-05.md i task aperti di Google Tasks di questo tema, con titoli uguali riuniti. Nessun task Google è stato chiuso.
+- Verifiche o fonti: mirror Google Tasks (sola lettura); assegnazione al repository per parole del titolo, non verificata; i task di lavoro (Novaenergy, SEI, Nexus) sono esclusi per scelta di Dario.
+- File o commit: docs/voci_dai_task_google_2026-11-05.md, questa voce.
+- Prossimo passo o blocchi: ok di Dario sulla chiusura dei task con riferimento al file; poi eventuali issue per le voci con prossima azione concreta.
+- Soggetto: task-google
