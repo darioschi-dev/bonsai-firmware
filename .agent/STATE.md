@@ -187,3 +187,11 @@
 - File o commit: .github/workflows/build.yml, platformio.ini, src/main.cpp, questa voce.
 - Prossimo passo o blocchi: il primo run reale parte al prossimo push che tocca src/ o platformio.ini e pubblica una release OTA: provare prima sul dispositivo dopo l'audit hardware (#30). Il ramo esp32-platform-8.0.0 e' ora incluso in master.
 - Soggetto: ci-runner-piattaforma
+
+## 2026-11-05 07:04 CET — Claude (sonnet-5-5, session id 8e5b6d58-b2a9-4a6a-b551-42dc8e2203f3) — OPERAZIONE — id: OTA-ROLLBACK-5-IMPLEMENTATA
+
+- Soggetto: ota-rollback
+- Decisione o attività: issue #5, criterio deciso da Dario il 2026-11-05 (validare a fine setup(), config caricata, senza WiFi/MQTT). Rimossa la chiamata esp_ota_mark_app_valid_cancel_rollback() dall'inizio di setup(); ora è a fine setup(), dopo setupDoneTime, e solo se otaShouldMarkValid(configLoaded) (src/ota_validity.h). Con config non caricata l'app non è marcata valida e al riavvio il bootloader torna alla partizione precedente.
+- Verifiche o fonti: test host test/ota_validity (g++): rosso prima dell'header, verde dopo; pio run -e esp32-prod su copia in cartella temporanea: SUCCESS, flash 93,3%. Non verificato: rollback reale su dispositivo (nessun flash, progetto in stato vetrina, #30). Nota: con debug=false il device dorme a fine ciclo, quindi la validazione avviene prima del deep sleep.
+- File o commit: src/main.cpp, src/ota_validity.h, test/ota_validity; commit con [skip ci], nessuna release OTA.
+- Prossimo passo o blocchi: prova su dispositivo dopo l'audit hardware (#30).

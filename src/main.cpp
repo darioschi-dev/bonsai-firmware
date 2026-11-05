@@ -10,6 +10,7 @@
 #include <SPIFFS.h>
 #include <time.h>
 
+#include "ota_validity.h"
 #include "config.h"
 #include "mail.h"
 #include "ap_password.h"
@@ -301,7 +302,6 @@ void setup() {
   delay(100);
 
   setupDeviceId();
-  esp_ota_mark_app_valid_cancel_rollback();
   debugLog("FW=" + currentAppVersion());
 
   if (prefs.begin("bonsai", false)) {
@@ -314,7 +314,8 @@ void setup() {
   ++bootCount;
   debugLog("BOOTCOUNT=" + String(bootCount));
 
-  if (!loadConfig(config)) {
+  bool configLoaded = loadConfig(config);
+  if (!configLoaded) {
     debugLog("CONFIG: load FAIL");
     // Continue anyway with defaults?
   } else {
@@ -411,6 +412,11 @@ void setup() {
   }
 
   setupDoneTime = millis();
+
+  // Fine setup(): conferma l'app dopo OTA, altrimenti il bootloader torna alla partizione precedente.
+  if (otaShouldMarkValid(configLoaded)) {
+    esp_ota_mark_app_valid_cancel_rollback();
+  }
   debugLog("SETUP: complete. Loop timeout: " + String(config.webserver_timeout));
 }
 
