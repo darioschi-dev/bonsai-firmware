@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# atk-managed: commit-msg 783016b9
+# atk-managed: commit-msg 95c116a8
 # Regola del workspace: nessun riferimento ad assistenti o modelli automatici nei messaggi di commit (vedi AGENTS.md).
 # Installato da `atk scaffold --hooks`, che imposta anche `git config core.hooksPath .githooks` (locale a ogni clone; lo controlla `atk doctor`).
 
@@ -130,6 +130,49 @@ if [[ -f ".agent/STATE.md" ]] \
     exit 1
   fi
 
+  # Correzione di una voce esistente (regola «Registro agenti»): si possono correggere refusi di date, nomi, importi,
+  # percorsi, mai cambiare significato; il commit che tocca righe di una voce esistente aggiunge nello stesso
+  # commit una voce NUOVA che contiene la parola «Rettifica» (cosa è stato corretto, da quale valore a quale), e una
+  # voce intera non si cancella. Una voce modificata nell'heading si riconosce dal suo `id:` (o dal testo dopo l'ora).
+  state_diff="$(git diff --cached -U0 --no-renames -- .agent/STATE.md 2>/dev/null | awk '/^@@/{h=1} h' || true)"
+  added_all="$(grep -E '^\+' <<< "$state_diff" | sed 's/^+//' | grep -vE '^[[:space:]]*$' || true)"
+  removed_eff="$(grep -E '^-' <<< "$state_diff" | sed 's/^-//' | grep -vE '^[[:space:]]*$' | grep -vxFf <(printf '%s\n' "$added_all") || true)"
+  if [[ -n "$removed_eff" ]]; then
+    entry_key() { if [[ "$1" == *"id: "* ]]; then printf '%s' "${1##*id: }"; else printf '%s' "${1:19}"; fi; }
+    added_keys=""
+    while IFS= read -r l; do
+      [[ "$l" == "## "* ]] && added_keys+="$(entry_key "$l")"$'\n'
+    done <<< "$added_all"
+    removed_keys=""
+    deleted=""
+    while IFS= read -r l; do
+      [[ "$l" == "## "* ]] || continue
+      k="$(entry_key "$l")"
+      removed_keys+="$k"$'\n'
+      grep -qxF -- "$k" <<< "$added_keys" || deleted+="  ${l:0:70}"$'\n'
+    done <<< "$removed_eff"
+    if [[ -n "$deleted" ]]; then
+      echo "[commit-msg] Commit rifiutato: una voce di .agent/STATE.md non si può cancellare (storia append-only); si rettifica con una voce nuova:" >&2
+      printf '%s' "$deleted" >&2
+      exit 1
+    fi
+    rettifica_ok=""
+    new_entry=""
+    while IFS= read -r l; do
+      case "$l" in
+        @@*) new_entry="" ;;
+        "+## "*)
+          if grep -qxF -- "$(entry_key "${l:1}")" <<< "$removed_keys"; then new_entry=""; else new_entry=1; fi ;;
+        "+"*)
+          if [[ -n "$new_entry" && "$l" == *[Rr]ettifica* ]]; then rettifica_ok=1; fi ;;
+      esac
+    done <<< "$state_diff"
+    if [[ -z "$rettifica_ok" ]]; then
+      echo "[commit-msg] Commit rifiutato: il commit modifica il testo di una voce esistente di .agent/STATE.md senza aggiungere una voce nuova di Rettifica (la parola «Rettifica» nel testo, con cosa è stato corretto, da quale valore a quale)." >&2
+      exit 1
+    fi
+  fi
+
   if [[ -z "${ATK_ALLOW_OLD_ENTRY:-}" ]]; then
     now="$(date '+%Y-%m-%d %H:%M')"
     floor="$(date -v-180M '+%Y-%m-%d %H:%M' 2>/dev/null || date -d '180 minutes ago' '+%Y-%m-%d %H:%M')"
@@ -146,6 +189,33 @@ if [[ -f ".agent/STATE.md" ]] \
       printf '%s' "$wrong" >&2
       echo "[commit-msg] L'ora va letta con \`date\` nello stesso comando che scrive la voce (T=\$(date '+%Y-%m-%d %H:%M %Z')), non stimata. Correggere l'heading; per una ricostruzione storica: ATK_ALLOW_OLD_ENTRY=1 git commit ..." >&2
       exit 1
+    fi
+  fi
+fi
+
+# Prossimo passo senza scheda (issue #33, regola «Errori ripetuti»): una voce NUOVA di `.agent/STATE.md` il cui «Prossimo passo o blocchi» è
+# un'azione senza scheda né issue lascia il lavoro solo nel diario, dove sparisce dai brief. Il controllo è in `atk context diario-check`
+# (solo voci aggiunte da questo commit, solo repository con schede). Blocca solo l'exit 1 (azione non collegata ad alcuna scheda; se la
+# voce nomina una scheda aperta ma non scrive «vedi scheda <id>» è un avviso con l'id da scrivere); un altro esito (atk vecchio o rotto)
+# avvisa e lascia passare: un hook che si rompe non deve fermare ogni commit. Durante un rebase è saltato come i controlli sopra.
+if [[ -f ".agent/STATE.md" ]] \
+   && [[ ! -d "$(git rev-parse --git-path rebase-merge)" && ! -d "$(git rev-parse --git-path rebase-apply)" ]] \
+   && ! git diff --cached --quiet -- .agent/STATE.md 2>/dev/null; then
+  if ! command -v atk >/dev/null 2>&1; then
+    echo "[commit-msg] atk non trovato: controllo diario-check (prossimo passo senza scheda) saltato" >&2
+  else
+    diario_status=0
+    diario_out="$(atk context diario-check --staged --root "$PWD" 2>&1)" || diario_status=$?
+    if [[ "$diario_status" -eq 1 ]]; then
+      echo "[commit-msg] Commit rifiutato: una voce nuova di .agent/STATE.md ha un prossimo passo senza scheda." >&2
+      printf '%s\n' "$diario_out" >&2
+      exit 1
+    elif [[ "$diario_status" -ne 0 ]]; then
+      echo "[commit-msg] atk context diario-check non è riuscito (esito $diario_status), controllo saltato:" >&2
+      printf '%s\n' "$diario_out" >&2
+    elif [[ -n "$diario_out" ]]; then
+      echo "[commit-msg] Avviso (il commit prosegue): manca il rimando alla scheda nel prossimo passo di una voce nuova." >&2
+      printf '%s\n' "$diario_out" >&2
     fi
   fi
 fi
